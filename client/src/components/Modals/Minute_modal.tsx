@@ -1,16 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+'use client'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import {
     MDBInput,
 }
     from 'mdb-react-ui-kit';
 import axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
 
 const Button_edit = styled(motion.button)`
     background-color: blue;
@@ -23,28 +24,15 @@ const Button_edit = styled(motion.button)`
     `;
 
 const Minute_modal = () => {
-
-    const navigate = useNavigate();
+    
+    const router = useRouter();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState<File | null>(null);
     const [date, setDate] = useState('');
     const [show, setShow] = useState(false);
     const { id } = useParams();
 
-    //   const loadminutes = async () => {
-    //     await axios.get(`http://127.0.0.1:8000/api/${id}/`)
-    //     .then((res) => {
-    //         setName(res.data.name);
-    //         setDescription(res.data.description);
-    //         setDate(res.data.date);
-    //         setImage(res.data.image);
-    //     }).catch((err) => {
-    //         console.log(err);
-    //     })
-    //     }
-
-    // or we can also do this
     const loadminutes = async () => {
         const { data } = await axios.get(`http://127.0.0.1:8000/api/${id}/`);
         console.log(data);
@@ -54,10 +42,9 @@ const Minute_modal = () => {
         setImage(data.image);
     }
 
-
     useEffect(() => {
         loadminutes();
-    }, [])
+    }, [loadminutes])
 
 
     const UpdateModal = async () => {
@@ -65,6 +52,7 @@ const Minute_modal = () => {
         formData.append('name', name);
         formData.append('description', description);
         formData.append('date', date);
+        if (image)
         formData.append('image', image);
         await axios({
             method: 'PUT',
@@ -73,27 +61,33 @@ const Minute_modal = () => {
         }).then((res) => {
             console.log(res.data);
             alert("Minute Updated Successfully");
-            navigate('/');
+            router.push('/');
         }).catch((err) => {
             console.log(err);
             alert("Enter the details correctly")
         })
     }
 
-    const handleShow = () => {
-        // setShow(true);
-        const dummy = axios.get('http://127.0.0.1:8000/api/')
-        navigate(`/update/${dummy.id}/`)
+    const handleShow = async () => {
+        const response = await axios.get('http://127.0.0.1:8000/api/');
+        const dummy = response.data;
+        router.push(`/update/${dummy?.id}/`);
     };
 
     const handleClose = () => {
-        setShow(false)
-        navigate('/') 
+        setShow(false);
+        router.push('/');
     };
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+          setImage(e.target.files[0]);
+        }
+      };
 
     return (
         <>
-            <Button_edit whileTap={{ scale: 0.8 }} whileHover={{ scale: 1.2 }} class="card-link" onClick={handleShow}>Edit</Button_edit>
+            <Button_edit whileTap={{ scale: 0.8 }} whileHover={{ scale: 1.2 }} className="card-link" onClick={handleShow}>Edit</Button_edit>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -103,7 +97,7 @@ const Minute_modal = () => {
                     <MDBInput wrapperClass='mb-4 my-5' label='Title' id='formControlLg' type='text' size="lg" value={name} required onChange={(e) => setName(e.target.value)} />
                     <MDBInput wrapperClass='mb-4 my-2' label='Description' id='formControlLg' type='text' size="lg" value={description} required onChange={(e) => setDescription(e.target.value)} />
                     <MDBInput wrapperClass='mb-4 my-2' label='Enter Date' id='formControlLg' type='date' size="lg" value={date} onChange={(e) => setDate(e.target.value)} />
-                    <MDBInput wrapperClass='mb-4 my-2' label='click to upload image' id='formControlLg' type='file' size="lg" onChange={(e) => setImage(e.target.files[0])} />
+                    <MDBInput wrapperClass='mb-4 my-2' label='click to upload image' id='formControlLg' type='file' size="lg" onChange={handleFileChange} />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

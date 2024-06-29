@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useState, ChangeEvent } from 'react';
 import {
   MDBContainer,
   MDBCard,
@@ -9,11 +10,10 @@ import {
   MDBInput,
   MDBCheckbox
 }
-from 'mdb-react-ui-kit';
+  from 'mdb-react-ui-kit';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import axios from 'axios';
-import {useState } from 'react';
 
 const Button = styled(motion.button)`
     background-color:blue;
@@ -29,29 +29,35 @@ const Button = styled(motion.button)`
     cursor: pointer;
 `;
 
-const Gallery_form=()=> {
+const Gallery_form = () => {
 
-    const [title, setTitle] = useState('');
-    const [image, setImage] = useState('');
+  const [title, setTitle] = useState('');
+  const [image, setImage] = useState<File | null>(null);
 
-    const AddGallery = async () => {
-        const formData = new FormData();
-        formData.append('Title', title);
-        formData.append('image', image);
-        await axios ({
-            method: 'POST',
-            url: 'http://127.0.0.1:8000/api/images',
-            data: formData,
-        }).then((res) => {
-            console.log(res.data);
-            alert("Image Added Successfully");
-            window.location.reload();
-        }).catch((err) => {
-            console.log(err);
-            alert("Enter the details correctly")
-        })
+  const AddGallery = async () => {
+    const formData = new FormData();
+    formData.append('Title', title);
+    if (image)
+      formData.append('image', image);
+    await axios({
+      method: 'POST',
+      url: 'http://127.0.0.1:8000/api/images',
+      data: formData,
+    }).then((res) => {
+      console.log(res.data);
+      alert("Image Added Successfully");
+      window.location.reload();
+    }).catch((err) => {
+      console.log(err);
+      alert("Enter the details correctly")
+    })
+  }
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
     }
-
+  };
 
 
   return (
@@ -68,14 +74,14 @@ const Gallery_form=()=> {
 
             <MDBCardBody>
 
-              <MDBInput wrapperClass='mb-4' label='Title' id='form1' type='text' value={title} onChange={(e)=>setTitle(e.target.value)}/>
-              <MDBInput wrapperClass='mb-4' label='Click to uplaod image' id='form2' type='file' onChange={(e)=>setImage(e.target.files[0])}/>
+              <MDBInput wrapperClass='mb-4' label='Title' id='form1' type='text' value={title} onChange={(e) => setTitle(e.target.value)} />
+              <MDBInput wrapperClass='mb-4' label='Click to uplaod image' id='form2' type='file' onChange={handleFileChange} />
 
               <div className="d-flex justify-content-between mx-4 mb-4">
                 <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Upload in the highest quality available' />
               </div>
 
-                <Button whileHover={{scale:1.1}} whileTap={{scale:0.8}} onClick={AddGallery}>Upload</Button>
+              <Button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }} onClick={AddGallery}>Upload</Button>
             </MDBCardBody>
 
           </MDBCol>

@@ -1,6 +1,6 @@
+'use client'
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
-// import Inline from "yet-another-react-lightbox/plugins/inline";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
@@ -8,8 +8,9 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 import styled from "styled-components";
+import { GalleryItem } from "@/types/GalleryItem";
 
 const Button_main = styled(motion.button)`
     background-color:red;
@@ -25,13 +26,13 @@ const Button_main = styled(motion.button)`
     cursor: pointer;
 `;
 
-const Gallery_base = (props) => {
+const Gallery_base = () => {
     const [open, setOpen] = useState(false);
 
-    const [gallery, setGallery] = useState([]);
+    const [gallery, setGallery] = useState<GalleryItem[]>([]);
 
     const getGallery = async () => {
-        const response = await axios.get('http://127.0.0.1:8000/api/images');
+        const response = await axios.get<GalleryItem[]>('http://127.0.0.1:8000/api/images');
         console.log(response.data);
         setGallery(response.data);
     }
@@ -42,7 +43,7 @@ const Gallery_base = (props) => {
 
     return (
         <>
-            <Button_main whileHover={{scale:1.1}} whileTap={{scale:0.8}}    type="button" onClick={() => setOpen(true)}>
+            <Button_main whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }} type="button" onClick={() => setOpen(true)}>
                 View Gallery
             </Button_main>
 
@@ -51,10 +52,10 @@ const Gallery_base = (props) => {
                 close={() => setOpen(false)}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
                 slides={[
-                    ...gallery.map((image) =>(
-                        { src: image.image }
+                    ...gallery.map((image) => (
+                        { src: image?.image }
                     ))
-                             ]}
+                ]}
             />
         </>
     );

@@ -1,10 +1,11 @@
-import { Button, Container } from "react-bootstrap";
+'use client'
 import styled from "styled-components";
-import { motion, spring } from "framer-motion";
-import Minute_modal from "../Modals/Minute_modal.jsx";
+import { motion } from "framer-motion";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
+import { Minute } from "@/types/Minute";
+import Image from "next/image";
 
 const Button_delete = styled(motion.button)`
     background-color: red;
@@ -30,57 +31,61 @@ margin-left:50px;
 
 const Card_main = () => {
 
-    const [minutes, setMinutes] = useState([]);
-
-    const loadminutes = async () => {
-        const result = await axios.get('http://127.0.0.1:8000/api/')
-        setMinutes(result.data);
-    }
+    const [minutes, setMinutes] = useState<Minute[]>([]);
 
     useEffect(() => {
-        loadminutes();
+        const loadMinutes = async () => {
+            try {
+                const result = await axios.get<Minute[]>('http://127.0.0.1:8000/api/');
+                setMinutes(result.data);
+            } catch (error) {
+                console.error("Error loading minutes:", error);
+            }
+        };
+        loadMinutes();
     }, [])
 
 
-    const deleteMinute = async (id) => {
-        await axios.delete(`http://127.0.0.1:8000/api/${id}/`);
-        window.location.reload();
-    }
-
+    const deleteMinute = async (id: number) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/${id}/`);
+            setMinutes(minutes.filter(minute => minute.id !== id));
+        } catch (error) {
+            console.error("Error deleting minute:", error);
+        }
+    };
 
     return (
 
 
-        <div class="col row-cols-1 row-cols-md-3 g-4 p-5">
+        <div className="col row-cols-1 row-cols-md-3 g-4 p-5">
             {
-                minutes.map((minute, index) => (
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <img src={minute.image} class="card-img-top" alt="" />
-                            <div class="card-body">
-                                <h5 class="card-title">{minute.title}</h5>
-                                <p class="card-text">
+                minutes.map((minute: Minute, index) => (
+                    <div className="col mb-5" key={index}>
+                        <div className="card h-100">
+                            <Image src={minute.image} className="card-img-top" alt="" />
+                            <div className="card-body">
+                                <h5 className="card-title">{minute.title}</h5>
+                                <p className="card-text">
                                     {minute.description}
                                 </p>
                             </div>
-                            <div class="card-body">
-                                <Link to={`/update/${minute.id}`} style={{ color: "white", textDecoration: "none" }}>
-                                    <Button_edit whileTap={{ scale: 0.8 }} whileHover={{ scale: 1.2 }} class="card-link">
+                            <div className="card-body">
+                                <Link href={`/update/${minute.id}`} passHref>
+                                    <Button_edit whileTap={{ scale: 0.8 }} whileHover={{ scale: 1.2 }} className="card-link">
                                         Edit
                                     </Button_edit>
                                 </Link>
-                                <Button_delete whileTap={{ scale: 0.8 }} whileHover={{ scale: 1.2 }} class="card-link  btn-danger" onClick={()=>deleteMinute(minute.id)}>Delete</Button_delete>
+                                <Button_delete whileTap={{ scale: 0.8 }} whileHover={{ scale: 1.2 }} className="card-link  btn-danger" onClick={() => deleteMinute(minute.id)}>Delete</Button_delete>
                             </div>
-                            <div class="card-footer mt-2">
-                                <small class="text-muted">Date created -{minute.date}</small>
+                            <div className="card-footer mt-2">
+                                <small className="text-muted">Date created -{minute.date}</small>
                             </div>
                         </div>
-
-
                     </div>
                 ))
             }
-                </div>            
+        </div>
     );
 }
 

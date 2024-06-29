@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import {
     MDBContainer,
@@ -74,8 +75,6 @@ const College_form = () => {
                                 <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }} />
                                 <span className="h1 fw-bold mb-0" style={{ marginLeft: "7vw" }}>Add College Details</span>
                             </div>
-                            {/* <h5 className="fw-normal my-4 pb-3" style={{letterSpacing: '1px'}}>Sign into your account</h5> */}
-
                             <MDBCol col='6' md='16' style={{ marginLeft: "3vw" }}>
                                 <MDBInput wrapperClass='mb-4 my-5' label='Name' id='formControlLg' type='text' size="lg" value={name} onChange={(e) => setName(e.target.value)} />
                                 <MDBInput wrapperClass='mb-4 my-5' label='Location' id='formControlLg' type='text' size="lg" value={location} onChange={(e) => setLocation(e.target.value)} />

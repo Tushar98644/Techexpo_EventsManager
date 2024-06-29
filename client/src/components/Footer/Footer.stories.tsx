@@ -1,3 +1,5 @@
+/* eslint-disable import/no-anonymous-default-export */
+import { JSX } from "react";
 import Footer from "./Footer";
 
 export default {
@@ -8,4 +10,4 @@ export default {
     },
 };
 
-export const Template = (args) => <Footer {...args} />;
+export const Template = (args: JSX.IntrinsicAttributes) => <Footer {...args} />;

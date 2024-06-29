@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import Navbar from "./Navbar";
 
 export default {
@@ -8,4 +9,4 @@ export default {
     },
 };
 
-export const Template = (args) => <Navbar {...args} />;
+export const Template = (args: any) => <Navbar {...args} />;

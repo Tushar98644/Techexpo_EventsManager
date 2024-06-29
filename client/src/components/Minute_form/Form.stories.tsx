@@ -1,3 +1,5 @@
+/* eslint-disable import/no-anonymous-default-export */
+import { JSX } from 'react';
 import Form from './Form';
 
 export default {
@@ -8,4 +10,4 @@ export default {
     },
 };
 
-export const Template = (args) => <Form {...args} />;
+export const Template = (args: JSX.IntrinsicAttributes) => <Form {...args} />;

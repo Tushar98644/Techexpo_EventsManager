@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import Card from './card';
 
 type CardProps = React.ComponentProps<typeof Card>;
@@ -10,4 +11,4 @@ export default {
     },
 };
 
-export const Template: React.FC<CardProps> = (args) => <Card {...args} />;
+export const Template: React.FC<CardProps> = (args : CardProps) => <Card/>;

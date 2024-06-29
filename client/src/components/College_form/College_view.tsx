@@ -1,6 +1,8 @@
+'use client'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
+import { School } from '@/types/school';
 
 const College_view = () => {
 
@@ -28,8 +30,8 @@ const College_view = () => {
             </MDBTableHead>
             <MDBTableBody>
                 {
-                    schools.map((school, index) => (
-                        <tr>
+                    schools.map((school : School, index) => (
+                        <tr key={index}>
                             <th scope='row' style={{ paddingLeft: "6vw" }}>{school.id}</th>
                             <td style={{ paddingLeft: "4vw" }}>{school.Name}</td>
                             <td style={{ paddingLeft: "4vw" }}><p style={{maxWidth:"8ch",overflow:"scroll"}}>{school.Location}</p></td>

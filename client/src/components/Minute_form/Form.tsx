@@ -1,3 +1,4 @@
+'use client'
 import {
   MDBContainer,
   MDBCol,
@@ -8,8 +9,9 @@ from 'mdb-react-ui-kit';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import axios from 'axios';
-import {useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {ChangeEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const Button = styled(motion.button)`
     background-color:blue;
@@ -27,10 +29,10 @@ const Button = styled(motion.button)`
 
 const Form=()=> {
 
-  const navigate = useNavigate();
+  const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState<File | null>(null);
   const [date, setDate] = useState('');
 
   const AddMinutes = async () => {
@@ -38,6 +40,7 @@ const Form=()=> {
     formData.append('name', name);
     formData.append('description', description);
     formData.append('date', date);
+    if (image)
     formData.append('image', image);
     await axios ({
       method: 'POST',
@@ -46,24 +49,30 @@ const Form=()=> {
     }).then((res) => {
         console.log(res.data);
         alert("Minute Added Successfully");
-        navigate('/');
+        router.push('/');
     }).catch((err) => { 
         console.log(err);
         alert("Enter the details correctly")
     })
   }
+ 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
+    }
+  };
 
   return (
     <MDBContainer fluid className="p-3 my-5">
       <MDBRow>
         <MDBCol col='10' md='6'>
-          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" class="img-fluid" alt="Phone image" />
+          <Image src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" className="img-fluid" alt="Phone image" width={500} height={500}/>
         </MDBCol>
         <MDBCol col='4' md='4'>
           <MDBInput wrapperClass='mb-4 my-5' label='Title' id='formControlLg' type='text' size="lg" value={name} required onChange={(e)=>setName(e.target.value)}/>
           <MDBInput wrapperClass='mb-4 my-2' label='Description' id='formControlLg' type='text' size="lg" value={description} required onChange={(e)=>setDescription(e.target.value)}/>
           <MDBInput wrapperClass='mb-4 my-2' label='Enter Date' id='formControlLg' type='date' size="lg" onChange={(e)=>setDate(e.target.value)} />
-          <MDBInput wrapperClass='mb-4 my-2' label='click to upload image' id='formControlLg' type='file' size="lg" onChange={(e)=>setImage(e.target.files[0])} />
+          <MDBInput wrapperClass='mb-4 my-2' label='click to upload image' id='formControlLg' type='file' size="lg" onChange={handleFileChange} />
           <Button whileHover={{scale:1.1}} whileTap={{scale:0.8}} onClick={AddMinutes}>Add Minutes</Button>
         </MDBCol>
       </MDBRow>
