@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('hello/', views.index, name='index'),
     path('add-minute/', views.MinuteListCreate.as_view(), name='MinuteListCreate'),
-    path('add-minute/<int:pk>/', views.MinuteRetrieveUpdateDestroy.as_view(), name='MinuteRetrieveUpdateDestroy'),
+    path('minutes/<int:pk>/', views.MinuteRetrieveUpdateDestroy.as_view(), name='MinuteRetrieveUpdateDestroy'),
     path('add-image/', views.GalleryListCreate.as_view(), name='GalleryListCreate'),
     path('add-image/<int:pk>/', views.GalleryRetrieveUpdateDestroy.as_view(), name='GalleryRetrieveUpdateDestroy'),
     path('add-school/', views.SchoolListCreate.as_view(), name='SchoolListCreate'),

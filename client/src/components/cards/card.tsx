@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 import styled from "styled-components";
 import { motion } from "framer-motion";
@@ -36,7 +37,7 @@ const Card_main = () => {
     useEffect(() => {
         const loadMinutes = async () => {
             try {
-                const result = await axios.get<Minute[]>('http://127.0.0.1:8000/api/');
+                const result = await axios.get<Minute[]>('http://127.0.0.1:8000/api/add-minute/');
                 setMinutes(result.data);
             } catch (error) {
                 console.error("Error loading minutes:", error);
@@ -48,8 +49,16 @@ const Card_main = () => {
 
     const deleteMinute = async (id: number) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/${id}/`);
-            setMinutes(minutes.filter(minute => minute.id !== id));
+            await axios.delete(`http://127.0.0.1:8000/api/minutes/${id}/`)
+            .then((res) => {
+                console.log(res.data);
+                setMinutes(minutes.filter((minute) => minute.id !== id));
+                alert("Minute Deleted Successfully");
+            })
+            .catch((err) => {
+                console.log(`There was a probem while deleting the minutes: ${err}`);
+                alert("Enter the details correctly");
+            });
         } catch (error) {
             console.error("Error deleting minute:", error);
         }
@@ -63,7 +72,7 @@ const Card_main = () => {
                 minutes.map((minute: Minute, index) => (
                     <div className="col mb-5" key={index}>
                         <div className="card h-100">
-                            <Image src={minute.image} className="card-img-top" alt="" />
+                            <img src={minute.image} className="card-img-top" alt="image" width={500} height={500}/>
                             <div className="card-body">
                                 <h5 className="card-title">{minute.title}</h5>
                                 <p className="card-text">

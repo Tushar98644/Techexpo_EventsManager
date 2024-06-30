@@ -4,12 +4,12 @@ import {
     MDBInput,
 }
     from 'mdb-react-ui-kit';
-import Footer from "mdb-react-ui-kit/dist/types/free/navigation/Footer/Footer";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, ChangeEvent } from "react";
 import Navbar from 'react-bootstrap/Navbar';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Footer from "@/components/Footer/Footer";
 
 const Edit_Modal = () => {
 
@@ -46,20 +46,23 @@ const Edit_Modal = () => {
         formData.append('date', date);
         if (image)
             formData.append('image', image);
-        await axios({
-            method: 'PUT',
-            url: `http://localhost:8000/api/${id}/`,
-            data: formData,
-        }).then((res) => {
-            console.log(res.data);
-            alert("Minute Updated Successfully");
-            router.push('/');
-        }).catch((err) => {
-            console.log(err);
-            alert("Enter the details correctly")
-        });
-
-
+        try {
+            await axios({
+                method: 'PUT',
+                url: `http://localhost:8000/api/minutes/${id}/`,
+                data: formData,
+            }).then((res) => {
+                console.log(res.data);
+                alert("Minute Updated Successfully");
+                router.push('/');
+            }).catch((err) => {
+                console.log(err);
+                alert("Enter the details correctly")
+            });
+        }
+        catch (err) {
+            console.log(`There was a problem while sending the response to the minute route: ${err}`);
+        }
     }
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -70,7 +73,7 @@ const Edit_Modal = () => {
 
     return (
         <>
-        <Navbar />
+            <Navbar />
             <Modal show={show} >
                 <Modal.Header >
                     <Modal.Title>Update Minute</Modal.Title>
@@ -91,7 +94,7 @@ const Edit_Modal = () => {
                 </Modal.Footer>
             </Modal>
             <Footer />
-            </>
+        </>
     );
 }
 
