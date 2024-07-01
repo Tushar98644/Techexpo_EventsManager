@@ -12,7 +12,6 @@ import Button from 'react-bootstrap/Button';
 import Footer from "@/components/Footer/Footer";
 
 const Edit_Modal = () => {
-
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState<File | null>(null);

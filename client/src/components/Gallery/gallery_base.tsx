@@ -31,13 +31,25 @@ const Gallery_base = () => {
 
     const [gallery, setGallery] = useState<GalleryItem[]>([]);
 
-    const getGallery = async () => {
-        const response = await axios.get<GalleryItem[]>('http://127.0.0.1:8000/api/images');
-        console.log(response.data);
-        setGallery(response.data);
-    }
-
     useEffect(() => {
+        const getGallery = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                await axios({
+                    method: 'GET',
+                    url: `${apiUrl}/api/add-image/`,
+                }).then((res) => {
+                    console.log(res.data);
+                    return setGallery(res.data);
+                }
+                ).catch((err) => {
+                    console.log(`Error in fetching gallery: ${err}`);
+                })
+            }
+            catch {
+                console.log(`There was a problem with the fetch operation of gallery`);
+            }
+        }
         getGallery();
     }, [])
 

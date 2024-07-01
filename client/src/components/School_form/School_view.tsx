@@ -8,13 +8,24 @@ const School_view = () => {
 
     const [schools, setSchools] = useState([]);
 
-    const getSchool = async () => {
-        const response = await axios.get("http://localhost:8000/api/school");
-        console.log(response.data);
-        return setSchools(response.data);
-    }
-
     useEffect(() => {
+        const getSchool = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                await axios({
+                    method: 'GET',
+                    url: `${apiUrl}/api/add-school/`,
+                }).then((res) => {
+                    console.log(res.data);
+                    return setSchools(res.data);
+                }).catch((err) => {
+                    console.log(`Erroe in fetching schools: ${err}`);
+                })
+            }
+            catch (err) {
+                console.log(`There was a problem with the fetch operation of schools: ${err}`);
+            }
+        }
         getSchool();
     }, [])
 

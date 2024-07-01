@@ -39,18 +39,24 @@ const Gallery_form = () => {
     formData.append('Title', title);
     if (image)
       formData.append('image', image);
-    await axios({
-      method: 'POST',
-      url: 'http://127.0.0.1:8000/api/images',
-      data: formData,
-    }).then((res) => {
-      console.log(res.data);
-      alert("Image Added Successfully");
-      window.location.reload();
-    }).catch((err) => {
-      console.log(err);
-      alert("Enter the details correctly")
-    })
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      await axios({
+        method: 'POST',
+        url: `${apiUrl}/api/add-image/`,
+        data: formData,
+      }).then((res) => {
+        console.log(res.data);
+        alert("Gallery Added Successfully");
+        window.location.reload();
+      }).catch((err) => {
+        console.log(err);
+        alert("Error in adding image to gallery");
+      })
+    }
+    catch (err) {
+      console.log(`There was a problem with the POST operation of gallery: ${err}`);
+    }
   }
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,9 +69,7 @@ const Gallery_form = () => {
   return (
     <MDBContainer className='my-5'>
       <MDBCard>
-
         <MDBRow className='g-0 d-flex align-items-center' md='4'>
-
           <MDBCol md='7'>
             <MDBCardImage src='https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg' alt='phone' className='rounded-t-5 rounded-tr-lg-0' fluid />
           </MDBCol>
