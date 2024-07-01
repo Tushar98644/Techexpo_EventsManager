@@ -9,7 +9,7 @@ const Minutes = () => {
       <Header Heading="Minute List" />
       <Card /> 
       <Footer />
-      </>
+    </>
   );
 }
 

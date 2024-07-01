@@ -38,22 +38,22 @@ const College_form = () => {
 
     const AddCollege = async () => {
         const formData = new FormData();
-        formData.append('Name', name);
-        formData.append('Location', location);
-        formData.append('Contact', contact);
-        formData.append('Email', email);
+        formData.append('name', name);
+        formData.append('location', location);
+        formData.append('contact', contact);
+        formData.append('email', email);
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            await axios({
-                method: 'POST',
-                url: `${apiUrl}/api/add-college/`,
-                data: formData,
-            }).then((res) => {
-                console.log(res.data);
-            }).catch((err) => {
-                console.log(`Erroe in adding college: ${err}`);
-            })
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const response = await axios.post(`${apiUrl}/api/add-college/`, formData, config);
+            console.log(response.data); 
+            alert("College Added Successfully");
+            window.location.reload();
         }
         catch (err) {
             console.log(`There was a problem with the post operation of colleges: ${err}`);

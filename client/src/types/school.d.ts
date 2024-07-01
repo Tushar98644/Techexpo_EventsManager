@@ -1,7 +1,7 @@
 export interface School {
     id: number;
-    Name: string;
-    Location: string;
-    Contact: string;
-    Email: string;
+    name: string;
+    location: string;
+    contact: string;
+    email: string;
 }

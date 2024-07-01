@@ -2,11 +2,11 @@ from rest_framework import generics
 from .models import College
 from .serializers import CollegeSerializer
 
-class CollegeCreate(generics.ListAPIView):
+class CollegeList(generics.ListAPIView):
     queryset = College.objects.all()
     serializer_class = CollegeSerializer
 
-class CollegeList(generics.CreateAPIView):
+class CollegeCreate(generics.CreateAPIView):
     queryset = College.objects.all()
     serializer_class = CollegeSerializer
 

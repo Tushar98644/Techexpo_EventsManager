@@ -30,18 +30,17 @@ const Button = styled(motion.button)`
 const Form = () => {
 
   const router = useRouter();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState<string>('');
 
   const AddMinutes = async () => {
-    const formData = {
-      title: title,
-      description: description,
-      date: date,
-      image: image,
-    }
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('image', image as Blob);
+    formData.append('date', date);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.post(`${apiUrl}/api/add-minute/`, formData);

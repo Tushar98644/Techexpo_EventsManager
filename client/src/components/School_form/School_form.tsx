@@ -23,36 +23,33 @@ const Button = styled(motion.button)`
 
 const School_form = () => {
 
-  const [name, setName] = useState('');
-  const [location, setLocation] = useState('');
-  const [contact, setContact] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
+  const [contact, setContact] = useState<number>();
+  const [email, setEmail] = useState<string>('');
 
   const AddSchool = async () => {
-    const formData = new FormData();
-    formData.append('Name', name);
-    formData.append('Location', location);
-    formData.append('Contact', contact);
-    formData.append('Email', email);
+    const formData = {
+      name: name,
+      location: location,
+      contact: contact,
+      email: email
+    }
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      await axios({
-        method: 'POST',
-        url: `${apiUrl}/api/add-school/`,
-        data: formData,
-      }).then((res) => {
-        console.log(res.data);
-        alert("School Added Successfully");
-        window.location.reload();
-      }).catch((err) => {
-        console.log(err);
-        alert("Enter the details correctly")
-      })
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const response = await axios.post(`${apiUrl}/api/add-school/`, formData,config);
+      console.log(response.data);
+      alert("School Added Successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding school:", error);
+      alert("Error in adding school");
     }
-    catch (err) {
-      console.log(`There was a problem with the fetch operation of schools: ${err}`);
-    }
-
   }
 
 
@@ -65,7 +62,7 @@ const School_form = () => {
         <MDBCol col='4' md='4'>
           <MDBInput wrapperClass='mb-4 my-5' label='Name' id='formControlLg' type='text' value={name} onChange={(e) => setName(e.target.value)} size="lg" />
           <MDBInput wrapperClass='mb-4 my-2' label='Location' id='formControlLg' type='text' value={location} size="lg" onChange={(e) => setLocation(e.target.value)} />
-          <MDBInput wrapperClass='mb-4 my-2' label='Contact' id='formControlLg' type='number' value={contact} maxLength={10} size="lg" onChange={(e) => setContact(e.target.value)} />
+          <MDBInput wrapperClass='mb-4 my-2' label='Contact' id='formControlLg' type='number' value={contact} maxLength={10} size="lg" onChange={(e) => setContact(Number(e.target.value))} />
           <MDBInput wrapperClass='mb-4 my-2' label='Email(if any)' id='formControlLg' type='email' value={email} size="lg" onChange={(e) => setEmail(e.target.value)} />
           <Button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.8 }} onClick={AddSchool}>Add School</Button>
         </MDBCol>

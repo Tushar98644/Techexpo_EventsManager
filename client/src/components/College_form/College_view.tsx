@@ -12,18 +12,19 @@ const College_view = () => {
         const getSchool = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                await axios({
-                    method: 'GET',
-                    url: `${apiUrl}/api/add-college/`,
-                }).then((res) => {
-                    console.log(res.data);
-                    return setSchools(res.data);
-                }).catch((err) => {
-                    console.log(`Erroe in fetching colleges: ${err}`);
-                })
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                };
+                const response = await axios.get(`${apiUrl}/api/get-colleges/`, config);
+                console.log(response.data);
+                setSchools(response.data);
+                alert("Colleges loaded Successfully");
             }
             catch (err) {
                 console.log(`There was a problem with the fetch operation of colleges: ${err}`);
+                alert("Error in loading colleges");
             }
         }
         getSchool();
@@ -44,9 +45,9 @@ const College_view = () => {
                     schools.map((school : School, index) => (
                         <tr key={index}>
                             <th scope='row' style={{ paddingLeft: "6vw" }}>{school.id}</th>
-                            <td style={{ paddingLeft: "4vw" }}>{school.Name}</td>
-                            <td style={{ paddingLeft: "4vw" }}><p style={{maxWidth:"8ch",overflow:"scroll"}}>{school.Location}</p></td>
-                            <td style={{ paddingLeft: "2vw" }}><p style={{ maxWidth: "8ch",overflow:"scroll" }}>{school.Contact} <br /> {school.Email}</p></td>
+                            <td style={{ paddingLeft: "4vw" }}>{school.name}</td>
+                            <td style={{ paddingLeft: "4vw" }}><p style={{maxWidth:"8ch",overflow:"scroll"}}>{school.location}</p></td>
+                            <td style={{ paddingLeft: "2vw" }}><p style={{ maxWidth: "8ch",overflow:"scroll" }}>{school.contact} <br /> {school.email}</p></td>
 
                         </tr>
                     )

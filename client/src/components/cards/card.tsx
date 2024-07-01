@@ -6,6 +6,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Minute } from "@/types/Minute";
 import Minute_modal from "../Modals/Minute_modal";
+import { Modal, Button } from "react-bootstrap";
 
 const Button_delete = styled(motion.button)`
     background-color: red;
@@ -38,10 +39,12 @@ const Card_main = () => {
         const loadMinutes = async () => {
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const result = await axios.get<Minute[]>(`${apiUrl}/api/add-minute/`);
+                const result = await axios.get<Minute[]>(`${apiUrl}/api/get-minutes/`);
+                console.log(result.data);
                 setMinutes(result.data);
             } catch (error) {
                 console.error("Error loading minutes:", error);
+                alert("Error in loading minutes");
             }
         };
         loadMinutes();
@@ -50,7 +53,7 @@ const Card_main = () => {
     const deleteMinute = async (id: number) => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await axios.delete(`${apiUrl}/api/minutes/${id}/`);
+            const response = await axios.delete(`${apiUrl}/api/minute/${id}/`);
             console.log(response.data);
             setMinutes(minutes.filter((minute) => minute.id !== id));
             alert("Minute Deleted Successfully");
@@ -61,11 +64,13 @@ const Card_main = () => {
     };
 
     const openModal = (minute: Minute) => {
+        console.log("open modal");
         setSelectedMinute(minute);
         setOpen(true);
     };
 
     const closeModal = () => {
+        console.log("close modal");
         setOpen(false);
         setSelectedMinute(null);
     };
@@ -78,11 +83,16 @@ const Card_main = () => {
     return (
         <>
             {open && selectedMinute && (
-                <Minute_modal
+                <div className="h-screen w-screen flex flex-col justify-center items-center">
+                    <Minute_modal
                     minute={selectedMinute}
                     closeModal={closeModal}
-                    updateMinute={updateMinute}
-                />
+                    updateMinute={updateMinute} />
+
+                    <div>
+                        <h1>Minutes</h1>
+                    </div>
+                </div>
             )}
             <div className="col row-cols-1 row-cols-md-3 g-4 p-5">
                 {minutes.map((minute: Minute, index) => (

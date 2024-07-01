@@ -31,31 +31,26 @@ const Button = styled(motion.button)`
 
 const Gallery_form = () => {
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
 
   const AddGallery = async () => {
     const formData = new FormData();
-    formData.append('Title', title);
-    if (image)
+    formData.append('title', title);
+    if (image) {
       formData.append('image', image);
+    }
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      await axios({
-        method: 'POST',
-        url: `${apiUrl}/api/add-image/`,
-        data: formData,
-      }).then((res) => {
-        console.log(res.data);
-        alert("Gallery Added Successfully");
-        window.location.reload();
-      }).catch((err) => {
-        console.log(err);
-        alert("Error in adding image to gallery");
-      })
+      const response = await axios.post(`${apiUrl}/api/add-image/`, formData);
+      console.log(response.data);
+      alert("Image Added Successfully");
+      window.location.reload();
     }
     catch (err) {
       console.log(`There was a problem with the POST operation of gallery: ${err}`);
+      alert("Error in adding image");
     }
   }
 
