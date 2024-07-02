@@ -6,29 +6,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Minute } from "@/types/Minute";
 import Minute_modal from "../Modals/Minute_modal";
-import { Modal, Button } from "react-bootstrap";
-
-const Button_delete = styled(motion.button)`
-    background-color: red;
-    border: none;
-    color: white;
-    border-radius: 80px;
-    height:50px;
-    width:130px;
-    margin-top: 20px;
-    margin-left:50px;
-`;
-
-const Button_edit = styled(motion.button)`
-background-color:blue;
-border: none;
-color: white;
-border-radius: 80px;
-height:50px;
-width:130px;
-margin-top: 20px;
-margin-left:50px;
-`;
 
 const Card_main = () => {
     const [minutes, setMinutes] = useState<Minute[]>([]);
@@ -81,7 +58,7 @@ const Card_main = () => {
     };
 
     return (
-        <>
+        <div>
             {open && selectedMinute && (
                 <div className="h-screen w-screen flex flex-col justify-center items-center">
                     <Minute_modal
@@ -94,43 +71,43 @@ const Card_main = () => {
                     </div>
                 </div>
             )}
-            <div className="col row-cols-1 row-cols-md-3 g-4 p-5">
+            <div className="grid grid-cols-3 gap-12 p-20">
                 {minutes.map((minute: Minute, index) => (
                     <div className="col mb-5" key={index}>
-                        <div className="card h-100">
-                            <img src={minute.image} className="card-img-top" alt="image" width={500} height={500} />
+                        <div className="card">
+                            <img src={minute.image} className="card-img-top h-100 w-40 p-3" alt="image" width={300} height={300} />
                             <div className="card-body">
                                 <h5 className="card-title">{minute.title}</h5>
                                 <p className="card-text">
                                     {minute.description}
                                 </p>
                             </div>
-                            <div className="card-body">
-                                <Button_edit
+                            <div className="buttons flex flex-row gap-8 justify-center items-center">
+                                <motion.button
                                     whileTap={{ scale: 0.8 }}
-                                    whileHover={{ scale: 1.2 }}
-                                    className="card-link"
+                                    whileHover={{ scale: 1.1 }}
+                                    className="card-link bg-blue-600 px-14 py-3 rounded-full text-white shadow-black shadow-lg"
                                     onClick={() => openModal(minute)}
                                 >
                                     Edit
-                                </Button_edit>
-                                <Button_delete
+                                </motion.button>
+                                <motion.button
                                     whileTap={{ scale: 0.8 }}
-                                    whileHover={{ scale: 1.2 }}
-                                    className="card-link  btn-danger"
+                                    whileHover={{ scale: 1.1 }}
+                                    className="card-link bg-red-600 px-12 py-3 rounded-full text-white shadow-black shadow-lg"
                                     onClick={() => deleteMinute(minute.id)}
                                 >
                                     Delete
-                                </Button_delete>
+                                </motion.button>
                             </div>
-                            <div className="card-footer mt-2">
+                            <div className="card-footer mt-4">
                                 <small className="text-muted">Date created - {minute.date}</small>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-        </>
+        </div>
     );
 };
 

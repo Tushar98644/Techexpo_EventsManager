@@ -7,7 +7,9 @@ const Minutes = () => {
   return (
     <>
       <Header Heading="Minute List" />
-      <Card /> 
+      <div className="flex flex-row gap-12">
+        <Card />
+      </div>
       <Footer />
     </>
   );
