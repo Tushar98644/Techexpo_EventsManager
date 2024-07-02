@@ -9,7 +9,6 @@ import {
     from 'mdb-react-ui-kit';
 import axios from 'axios';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Minute } from '@/types/Minute';
 
 interface Props {
@@ -18,23 +17,31 @@ interface Props {
     updateMinute: (minute: Minute) => void;
 }
 
-const Minute_modal = ({ minute, closeModal, updateMinute } : Props) => {
-
-    const [title, setTitle] = useState<string>(minute?.title);
-    const [description, setDescription] = useState<string>(minute?.description);
-    const [image, setImage] = useState<File | string | null>(minute?.image);
+const Minute_modal = ({ minute, closeModal, updateMinute }: Props) => {
+    const [image, setImage] = useState<File | string | null>(minute.image);
+     const [title  , setTitle] = useState(minute.title);
+    const [description, setDescription] = useState(minute.description);
+    const [date, setDate] = useState(minute.date);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('date', date);
+        if (image) {
+            formData.append('image', image);
+        }
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
             const config = {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 },
             };
-            const updatedMinute = {  ...minute,title, description, image };
-            const response = await axios.put(`${apiUrl}/api/minute/${minute.id}/`, updatedMinute, config);
+            const updatedMinute = { ...minute , title, description, image };
+            console.log(updatedMinute);
+            const response = await axios.put(`${apiUrl}/api/minute/${minute.id}/`, formData, config);
             updateMinute(response.data);
             alert("Minute Updated Successfully");
         } catch (error) {
@@ -56,8 +63,8 @@ const Minute_modal = ({ minute, closeModal, updateMinute } : Props) => {
                     <Modal.Title>Update Minute</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <MDBInput wrapperClass='mb-4 my-5' label='Title' id='formControlLg' type='text' size="lg" value={title} required onChange={(e) => setTitle(e.target.value)} />
-                    <MDBInput wrapperClass='mb-4 my-2' label='Description' id='formControlLg' type='text' size="lg" value={description} required onChange={(e) => setDescription(e.target.value)} />
+                    <MDBInput wrapperClass='mb-4 my-5' label='Title' id='formControlLg' type='text' size="lg" value={title} required onChange={(e)=> setTitle(e.target.value)} />
+                    <MDBInput wrapperClass='mb-4 my-2' label='Description' id='formControlLg' type='text' size="lg" value={description} required onChange={(e)=>setDescription(e.target.value)} />
                     <MDBInput wrapperClass='mb-4 my-2' label='click to upload image' id='formControlLg' type='file' size="lg" onChange={handleFileChange} />
                 </Modal.Body>
                 <Modal.Footer>

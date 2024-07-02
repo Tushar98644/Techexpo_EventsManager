@@ -43,7 +43,6 @@ const Gallery_base = () => {
                 const response = await axios.get<GalleryItem[]>(`${apiUrl}/api/get-gallery/`, config);
                 console.log(response.data);
                 setGallery(response.data);
-                alert("Gallery loaded Successfully");
             }
             catch {
                 console.log(`There was a problem with the fetch operation of gallery`);
